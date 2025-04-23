@@ -1,7 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bookingRoutes = require('./routes/bookingRoutes');
 const cors = require('cors');
+const bookingRoutes = require('./routes/bookingRoutes');
+const userRoutes = require('./routes/userRoutes');
+const protectedRoutes = require('./routes/protectedRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+
 
 const app = express();
 const port = 5000;
@@ -32,7 +36,12 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/protected', protectedRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.listen(port, () => {
   console.log(`🚀 Server running on http://localhost:${port}`);
 });
+
+
