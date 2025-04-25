@@ -11,10 +11,10 @@ const bookingSchema = new mongoose.Schema({
   childrenAges: [Number],
   checkIn: Date,
   checkOut: Date,
-  room: String,
+  room: { type: mongoose.Schema.Types.ObjectId, ref: 'Room' },
   status: {
     type: String,
-    default: 'confirmed'  // Set default status
+    default: 'Confirmed'  // Set default status
   }
 });
 
