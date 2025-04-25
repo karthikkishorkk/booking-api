@@ -53,6 +53,41 @@ router.post("/signup", async (req, res) => {
     }
   });
   
+// DELETE User (Staff) by ID
+router.delete('/:id', async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting user:', err);
+    res.status(500).json({ message: 'Error deleting user' });
+  }
+});
+
+// PUT/UPDATE User (Staff) by ID
+router.put('/:id', async (req, res) => {
+  const { username, email, password } = req.body;
   
+  try {
+    // Optionally hash the password if it's being updated
+    let updatedData = { username, email };
+    if (password) {
+      updatedData.password = await bcrypt.hash(password, 10);
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, updatedData, { new: true });
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: 'User updated successfully', updatedUser });
+  } catch (err) {
+    console.error('Error updating user:', err);
+    res.status(500).json({ message: 'Error updating user' });
+  }
+});
 
 module.exports = router;
