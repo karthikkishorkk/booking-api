@@ -3,7 +3,35 @@ const router = express.Router();
 const Room = require('../models/Room');
 const { getAvailableRooms } = require('../controllers/roomController');
 
-// ✅ GET available rooms based on date range and optional roomType
+// stats route
+router.get('/stats', async (req, res) => {
+  try {
+    console.log('Fetching room stats...'); 
+    const totalRooms = await Room.countDocuments();
+    const availableRooms = await Room.countDocuments({ status: 'available' });
+    const bookedRooms = await Room.countDocuments({ status: 'booked' });
+    const maintenanceRooms = await Room.countDocuments({ status: 'under_maintenance' });
+
+    console.log({
+      totalRooms,
+      availableRooms,
+      bookedRooms,
+      maintenanceRooms,
+    });
+
+    res.json({
+      totalRooms,
+      availableRooms,
+      bookedRooms,
+      maintenanceRooms,
+    });
+  } catch (err) {
+    console.error('Error fetching stats:', err); 
+    res.status(500).json({ message: 'Error fetching stats' });
+  }
+});
+
+//GET available rooms based on date range and optional roomType
 router.get('/available', getAvailableRooms);
 
 // Get all rooms
