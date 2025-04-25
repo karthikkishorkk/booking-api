@@ -38,7 +38,6 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({ message: 'Admin username already taken' });
     }
 
-    // Hash the password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newAdmin = new Admin({ username, password: hashedPassword });
