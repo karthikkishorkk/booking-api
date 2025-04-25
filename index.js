@@ -5,6 +5,8 @@ const bookingRoutes = require('./routes/bookingRoutes');
 const userRoutes = require('./routes/userRoutes');
 const protectedRoutes = require('./routes/protectedRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const roomRoutes = require('./routes/roomRoutes');
+
 
 
 const app = express();
@@ -39,6 +41,7 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/protected', protectedRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/rooms', roomRoutes);
 
 app.listen(port, () => {
   console.log(`🚀 Server running on http://localhost:${port}`);
