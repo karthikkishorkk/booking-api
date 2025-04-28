@@ -10,6 +10,8 @@ const roomSchema = new mongoose.Schema({
   },
   capacity: { type: Number, required: true },
   amenities: [String], // e.g., ['WiFi', 'AC', 'TV']
+  maintenanceStartDate: { type: Date, default: null },
+  maintenanceEndDate: { type: Date, default: null },
   
   bookings: [
     {
