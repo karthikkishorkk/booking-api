@@ -20,7 +20,7 @@ router.post('/login', async (req, res) => {
     }
 
     const token = generateToken(admin._id, 'admin');
-    res.json({ message: 'Admin login successful', token });
+    res.json({ message: 'Admin login successful', token, role:"admin" });
 
   } catch (error) {
     console.error('Admin login error:', error);

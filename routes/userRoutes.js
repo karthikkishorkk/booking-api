@@ -23,7 +23,7 @@ router.post("/login", async (req, res) => {
       }
   
       const token = generateToken(user._id, "user");
-      res.json({ message: "Login successful", token });
+      res.json({ message: "Login successful", token, role:"user" });
     } catch (error) {
       console.error("Login error:", error);
       res.status(500).json({ message: "Server error" });
