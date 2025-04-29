@@ -14,7 +14,7 @@ const bookingSchema = new mongoose.Schema({
   room: { type: mongoose.Schema.Types.ObjectId, ref: 'Room' },
   status: {
     type: String,
-    default: 'Confirmed'  // Set default status
+    default: 'Booked'  // Set default status
   }
 });
 

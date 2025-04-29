@@ -106,17 +106,20 @@ router.get('/:roomId/availability', async (req, res) => {
     room.bookings.forEach(booking => {
       const start = new Date(booking.startDate);
       const end = new Date(booking.endDate);
-
+    
+      start.setHours(0, 0, 0, 0);
+      end.setHours(0, 0, 0, 0);
+    
       allBookings.push({
         guestName: booking.guestName,
         startDate: booking.startDate,
         endDate: booking.endDate
       });
-
-      for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-        const iso = new Date(d).toISOString().split("T")[0];
+    
+      for (let d = new Date(start); d <= end; d = new Date(d.getTime() + 24 * 60 * 60 * 1000)) {
+        const iso = d.toISOString().split("T")[0];
         availability[iso] = "booked";
-      }
+      }      
     });
 
     // Fill available days and mark maintenance days

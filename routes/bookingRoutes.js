@@ -29,15 +29,29 @@ router.post('/', async (req, res) => {
     room,
     checkIn,
     checkOut,
-    status
+    status // We still receive the status in the body, but the default is already set in the schema
   } = req.body;
 
   try {
+    // Check if room exists
     const roomData = await Room.findById(room);
     if (!roomData) {
       return res.status(404).json({ error: 'Room not found' });
     }
 
+    // Check if the room is already booked for the selected dates
+    const existingBooking = await Booking.findOne({
+      room: room,
+      $or: [
+        { checkIn: { $lt: checkOut }, checkOut: { $gt: checkIn } },  // Check overlap of dates
+      ],
+    });
+
+    if (existingBooking) {
+      return res.status(400).json({ error: 'Room is already booked for the selected dates.' });
+    }
+
+    // Create a new booking, status defaults to 'Booked' if not provided
     const newBooking = await Booking.create({
       firstName,
       lastName,
@@ -50,14 +64,18 @@ router.post('/', async (req, res) => {
       room,
       checkIn,
       checkOut,
-      status,
+      status: status || 'Booked',  // Use 'Booked' if no status is provided
     });
 
+    // Update room status to 'booked'
+    roomData.status = 'booked';
     roomData.bookings.push({
       startDate: checkIn,
       endDate: checkOut,
-      bookingId: newBooking._id
+      bookingId: newBooking._id,
     });
+    
+    // Save the room data after updating its status and bookings
     await roomData.save();
 
     res.status(201).json({ data: newBooking });
@@ -65,6 +83,7 @@ router.post('/', async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
+
 
 // PATCH a booking by ID
 router.patch('/:id', async (req, res) => {
