@@ -29,29 +29,35 @@ router.post("/login", async (req, res) => {
       res.status(500).json({ message: "Server error" });
     }
   });
-  
 
 // Signup route
 router.post("/signup", async (req, res) => {
-    const { username, email, password } = req.body;
-  
-    try {
-      const existingUser = await User.findOne({ username });
-      if (existingUser) {
-        return res.status(400).json({ message: "Username already taken" });
-      }
-  
-      // Hash the password using bcryptjs
-      const hashedPassword = await bcrypt.hash(password, 10);
-  
-      const newUser = await User.create({ username, email, password: hashedPassword });
-  
-      res.status(201).json({ message: "Signup successful" });
-    } catch (error) {
-      console.error("Signup error:", error);
-      res.status(500).json({ message: "Server error" });
+  const { username, email, password } = req.body;
+
+  try {
+    // Check if the username already exists
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) {
+      return res.status(400).json({ message: "Username already taken" });
     }
-  });
+
+    // Check if the email already exists
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      return res.status(400).json({ message: "Email already taken" });
+    }
+
+    // Hash the password using bcryptjs
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await User.create({ username, email, password: hashedPassword });
+
+    res.status(201).json({ message: "Signup successful" });
+  } catch (error) {
+    console.error("Signup error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
   
 // DELETE User (Staff) by ID
 router.delete('/:id', async (req, res) => {
