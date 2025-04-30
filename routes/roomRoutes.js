@@ -58,14 +58,24 @@ router.get('/:id', async (req, res) => {
 // Create a room
 router.post('/', async (req, res) => {
   const { roomNumber, roomType, status, capacity, amenities } = req.body;
+
   try {
+    // Check for existing room with same roomNumber
+    const existingRoom = await Room.findOne({ roomNumber });
+    if (existingRoom) {
+      return res.status(400).json({ message: 'Room with this number already exists' });
+    }
+
     const room = new Room({ roomNumber, roomType, status, capacity, amenities });
     await room.save();
+
     res.status(201).json({ message: 'Room created successfully', room });
   } catch (err) {
-    res.status(500).json({ message: 'Error creating room' });
+    console.error('Error creating room:', err.message);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
 
 // Update room by ID
 router.put('/:id', async (req, res) => {
